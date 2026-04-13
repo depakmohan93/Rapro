@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,500;1,700&family=Inter:wght@400;500;600;700&family=Mulish:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-green: #73B130;
+  --brand-dark: #0D631B;
+  --brand-mid: #2C7B30;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+  color: #1A1C1E;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Quicksand', sans-serif;
+}
+
+@layer utilities {
+  .gradient-btn {
+    background: linear-gradient(103.43deg, #0D631B 0%, #2E7D32 100%);
+  }
+  .gradient-btn-2 {
+    background: linear-gradient(98.23deg, #0D631B 0%, #2E7D32 100%);
+  }
+}
