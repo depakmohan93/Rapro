@@ -8,8 +8,8 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
 
-const SPREADSHEET_ID = '1mcge45CmZAADWm96_SuJEoAchVvOsvG6qtbtFOLOaMA'
-const SHEET_NAME = 'Sheet1'
+// Google Apps Script Web App URL — replace this after deploying your script
+const APPS_SCRIPT_URL = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL || ''
 
 const stats = [
   { value: 500, suffix: '+', label: 'TRUSTED CUSTOMERS', decimal: false },
@@ -124,13 +124,21 @@ export default function Hero() {
     setSubmitStatus('idle')
     try {
       const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
-      const row = [timestamp, formData.name, formData.phone, formData.email, formData.propertyType, formData.location]
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_API_KEY
-      const response = await fetch(
-        `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(SHEET_NAME)}!A:F:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS&key=${apiKey}`,
-        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [row] }) }
-      )
-      if (!response.ok) throw new Error('Sheet write failed')
+      const payload = {
+        timestamp,
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        propertyType: formData.propertyType,
+        location: formData.location,
+      }
+      // Send as URL params to Apps Script (no-cors compatible)
+      const params = new URLSearchParams(payload)
+      await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, {
+        method: 'GET',
+        mode: 'no-cors',
+      })
+      // no-cors means we can't read response, assume success
       setSubmitStatus('success')
       setFormData({ name: '', phone: '', email: '', propertyType: 'Apartment', location: '' })
       setErrors({})
@@ -146,27 +154,13 @@ export default function Hero() {
 
   return (
     <section id="consultation" className="relative min-h-screen pt-[76px] overflow-hidden">
-
-      {/* Video background */}
-      <video
-        className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-      >
+      <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline preload="auto">
         <source src="/hero_bg.mp4" type="video/mp4" />
       </video>
-
-      {/* 50% black overlay */}
       <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.5)' }} />
 
-      {/* Content */}
       <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-20 py-6 md:pt-[99px] md:pb-[99px]">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-0 items-start">
-
-          {/* Left */}
           <div className="flex-1 lg:max-w-[727px]">
             <div ref={badgeRef} className="relative mb-10" style={{ width: '320px', height: '71px' }}>
               <div className="absolute inset-0" style={{ background: 'rgba(255,255,255,0.15)', boxShadow: '0px 4px 4px rgba(0,0,0,0.2)', borderRadius: '8px' }} />
@@ -178,16 +172,12 @@ export default function Hero() {
                 <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '18px', color: '#FFFFFF', whiteSpace: 'nowrap' }}>Property Management Service</span>
               </div>
             </div>
-
             <h1 ref={headingRef} className="font-quicksand font-bold text-white mb-6 leading-[1.2]" style={{ fontSize: 'clamp(40px, 5vw, 72px)', letterSpacing: '-0.8px', maxWidth: '689px' }}>
-              Your Property.<br />Fully Managed.<br />
-              <span style={{ color: '#73B130' }}>Zero Hassle.</span>
+              Your Property.<br />Fully Managed.<br /><span style={{ color: '#73B130' }}>Zero Hassle.</span>
             </h1>
-
             <p ref={subRef} className="font-poppins font-light text-white mb-6 leading-[1.6]" style={{ fontSize: '20px', maxWidth: '486px' }}>
               Rajam Property is an award-winning business focused on complete property needs.
             </p>
-
             <div ref={reviewRef} className="flex items-center gap-3 mb-8">
               <Image src="/review_cluster.png" alt="Customer reviews" width={138} height={38} className="object-contain flex-shrink-0" />
               <div className="flex flex-col gap-1">
@@ -201,7 +191,6 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-
             <div ref={pillsRef} className="grid grid-cols-2 gap-3 max-w-[570px]">
               {['No Signup Fee', 'Verified Tenants', '12+ Services in One', '100% Transparent Billing'].map((feature) => (
                 <div key={feature} className="flex items-center gap-3 px-3 py-2 rounded" style={{ background: 'rgba(185,233,183,0.19)', backdropFilter: 'blur(2px)' }}>
@@ -212,11 +201,8 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right: Form */}
           <div ref={formWrapRef} className="relative w-full lg:w-[480px] flex-shrink-0">
-            <div className="absolute -top-16 -left-20 z-20 pointer-events-none">
-              <FloatingBadge />
-            </div>
+            <div className="absolute -top-16 -left-20 z-20 pointer-events-none"><FloatingBadge /></div>
             <form onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl px-10 pb-10 pt-14" style={{ boxShadow: '0px 25px 42.7px -12px rgba(44,123,48,0.36)' }}>
               <h2 className="font-quicksand font-bold text-[#1A1C1E] text-2xl leading-8 mb-1">Get your free consultation today.</h2>
               <p className="font-poppins font-normal text-[#40493D] text-sm mb-8">Our experts will call you back within 24 hours.</p>
@@ -276,7 +262,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Stats bar */}
       <div ref={statsRef} className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-20 pb-16">
         <div className="rounded-3xl px-10 py-12 grid grid-cols-2 md:grid-cols-4 gap-8" style={{ background: 'rgba(255,255,255,0.1)', border: '2px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(3.35px)' }}>
           {stats.map((stat, i) => (
