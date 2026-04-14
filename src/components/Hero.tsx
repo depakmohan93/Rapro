@@ -201,8 +201,8 @@ export default function Hero() {
             </div>
           </div>
 
-          <div ref={formWrapRef} className="relative w-full lg:w-[480px] flex-shrink-0">
-            <div className="absolute -top-10 left-4 z-20 pointer-events-none"><FloatingBadge /></div>
+          <div ref={formWrapRef} className="relative w-full lg:w-[480px] flex-shrink-0 mt-8 lg:mt-0">
+            <div className="absolute -top-16 -left-4 z-20 pointer-events-none"><FloatingBadge /></div>
             <form onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl px-10 pb-10 pt-14" style={{ boxShadow: '0px 25px 42.7px -12px rgba(44,123,48,0.36)' }}>
               <h2 className="font-quicksand font-bold text-[#1A1C1E] text-2xl leading-8 mb-1">Get your free consultation today.</h2>
               <p className="font-poppins font-normal text-[#40493D] text-sm mb-8">Our experts will call you back within 24 hours.</p>
