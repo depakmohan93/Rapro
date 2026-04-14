@@ -159,7 +159,7 @@ export default function Hero() {
       </video>
       <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.5)' }} />
 
-      <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-20 py-6 md:pt-[99px] md:pb-[99px]">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-20 pt-16 pb-6 md:pt-[99px] md:pb-[99px]">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-0 items-start">
           <div className="flex-1 lg:max-w-[727px]">
             <div ref={badgeRef} className="relative mb-10" style={{ width: '320px', height: '71px' }}>
@@ -201,8 +201,8 @@ export default function Hero() {
             </div>
           </div>
 
-          <div ref={formWrapRef} className="relative w-full lg:w-[480px] flex-shrink-0 mt-8 lg:mt-0">
-            <div className="absolute -top-16 -left-4 z-20 pointer-events-none"><FloatingBadge /></div>
+          <div ref={formWrapRef} className="relative w-full lg:w-[480px] flex-shrink-0 mt-20 lg:mt-0">
+            <div className="absolute -top-20 -left-4 lg:-left-20 z-20 pointer-events-none"><FloatingBadge /></div>
             <form onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl px-10 pb-10 pt-14" style={{ boxShadow: '0px 25px 42.7px -12px rgba(44,123,48,0.36)' }}>
               <h2 className="font-quicksand font-bold text-[#1A1C1E] text-2xl leading-8 mb-1">Get your free consultation today.</h2>
               <p className="font-poppins font-normal text-[#40493D] text-sm mb-8">Our experts will call you back within 24 hours.</p>
@@ -232,7 +232,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <div>
-                  <label className="font-poppins font-semibold text-[#1A1C1E] text-sm block mb-1.5">Property Location <span className="text-[#6B7280] font-normal">(where they live)</span></label>
+                  <label className="font-poppins font-semibold text-[#1A1C1E] text-sm block mb-1.5">Property Location</label>
                   <div className="relative">
                     <select value={formData.location} onChange={e => { setFormData({ ...formData, location: e.target.value }); if (errors.location) setErrors({ ...errors, location: '' }) }} className={`w-full h-12 rounded-lg px-4 font-poppins text-base border-0 outline-none appearance-none transition-all ${errors.location ? 'bg-[#F3F3F6] ring-2 ring-red-400' : 'bg-[#F3F3F6] focus:ring-2 focus:ring-[#73B130]/30'} ${formData.location ? 'text-[#1A1C1E]' : 'text-[#6B7280]'}`}>
                       <option value="">Select area</option><option>Adyar</option><option>Anna Nagar</option><option>Velachery</option><option>OMR</option><option>T. Nagar</option><option>Porur</option><option>Sholinganallur</option><option>Other</option>
