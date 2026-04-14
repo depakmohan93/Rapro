@@ -31,7 +31,7 @@ export default function Services() {
             <div
               key={i}
               ref={el => setCardRef(el, i)}
-              className="bg-white rounded-2xl p-10 flex flex-col hover:shadow-md transition-shadow"
+              className="bg-white rounded-2xl p-6 flex flex-col hover:shadow-md transition-shadow"
               style={{ border: '1px solid rgba(0,0,0,0.06)', gap: '0.375rem' }}
             >
               <Image src={service.icon} alt={service.title} width={56} height={56} className="mb-3" />
