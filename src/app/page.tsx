@@ -11,6 +11,7 @@ import ProblemSolution from '@/components/ProblemSolution'
 import CTA3 from '@/components/CTA3'
 import FAQ from '@/components/FAQ'
 import Footer from '@/components/Footer'
+import FloatingWidgets from '@/components/FloatingWidgets'
 
 export default function Home() {
   return (
@@ -28,6 +29,7 @@ export default function Home() {
       <CTA3 />
       <FAQ />
       <Footer />
+      <FloatingWidgets />
     </main>
   )
 }

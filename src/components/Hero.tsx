@@ -62,6 +62,7 @@ function FloatingBadge() {
 
 export default function Hero() {
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', propertyType: 'Apartment', location: '' })
+  const [otherLocation, setOtherLocation] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -113,6 +114,7 @@ export default function Hero() {
     if (phoneErr) newErrors.phone = phoneErr
     if (emailErr) newErrors.email = emailErr
     if (!formData.location) newErrors.location = 'Please select a property location'
+    if (formData.location === 'Other' && !otherLocation.trim()) newErrors.location = 'Please enter your location'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -124,13 +126,14 @@ export default function Hero() {
     setSubmitStatus('idle')
     try {
       const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      const finalLocation = formData.location === 'Other' ? otherLocation : formData.location
       const payload = {
         timestamp,
         name: formData.name,
         phone: formData.phone,
         email: formData.email,
         propertyType: formData.propertyType,
-        location: formData.location,
+        location: finalLocation,
       }
       // Send as URL params to Apps Script (no-cors compatible)
       const params = new URLSearchParams(payload)
@@ -141,6 +144,7 @@ export default function Hero() {
       // no-cors means we can't read response, assume success
       setSubmitStatus('success')
       setFormData({ name: '', phone: '', email: '', propertyType: 'Apartment', location: '' })
+      setOtherLocation('')
       setErrors({})
     } catch {
       setSubmitStatus('error')
@@ -203,7 +207,7 @@ export default function Hero() {
 
           <div ref={formWrapRef} className="relative w-full lg:w-[480px] flex-shrink-0 mt-20 lg:mt-0">
             <div className="absolute -top-20 -left-4 lg:-left-20 z-20 pointer-events-none"><FloatingBadge /></div>
-            <form onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl px-10 pb-10 pt-14" style={{ boxShadow: '0px 25px 42.7px -12px rgba(44,123,48,0.36)' }}>
+            <form id="consultation-form" onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl px-10 pb-10 pt-14" style={{ boxShadow: '0px 25px 42.7px -12px rgba(44,123,48,0.36)' }}>
               <h2 className="font-quicksand font-bold text-[#1A1C1E] text-2xl leading-8 mb-1">Get your free consultation today.</h2>
               <p className="font-poppins font-normal text-[#40493D] text-sm mb-8">Our experts will call you back within 24 hours.</p>
               <div className="flex flex-col gap-4">
@@ -234,11 +238,20 @@ export default function Hero() {
                 <div>
                   <label className="font-poppins font-semibold text-[#1A1C1E] text-sm block mb-1.5">Property Location</label>
                   <div className="relative">
-                    <select value={formData.location} onChange={e => { setFormData({ ...formData, location: e.target.value }); if (errors.location) setErrors({ ...errors, location: '' }) }} className={`w-full h-12 rounded-lg px-4 font-poppins text-base border-0 outline-none appearance-none transition-all ${errors.location ? 'bg-[#F3F3F6] ring-2 ring-red-400' : 'bg-[#F3F3F6] focus:ring-2 focus:ring-[#73B130]/30'} ${formData.location ? 'text-[#1A1C1E]' : 'text-[#6B7280]'}`}>
+                    <select value={formData.location} onChange={e => { setFormData({ ...formData, location: e.target.value }); setOtherLocation(''); if (errors.location) setErrors({ ...errors, location: '' }) }} className={`w-full h-12 rounded-lg px-4 font-poppins text-base border-0 outline-none appearance-none transition-all ${errors.location ? 'bg-[#F3F3F6] ring-2 ring-red-400' : 'bg-[#F3F3F6] focus:ring-2 focus:ring-[#73B130]/30'} ${formData.location ? 'text-[#1A1C1E]' : 'text-[#6B7280]'}`}>
                       <option value="">Select area</option><option>Adyar</option><option>Anna Nagar</option><option>Velachery</option><option>OMR</option><option>T. Nagar</option><option>Porur</option><option>Sholinganallur</option><option>Other</option>
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" /></svg></div>
                   </div>
+                  {formData.location === 'Other' && (
+                    <input
+                      type="text"
+                      placeholder="Enter your location"
+                      value={otherLocation}
+                      onChange={e => { setOtherLocation(e.target.value); if (errors.location) setErrors({ ...errors, location: '' }) }}
+                      className={`w-full h-[47px] bg-[#F3F3F6] rounded-lg px-4 font-poppins text-base text-[#1A1C1E] placeholder-[#6B7280] border-0 outline-none transition-all mt-2 ${errors.location ? 'ring-2 ring-red-400' : 'focus:ring-2 focus:ring-[#73B130]/30'}`}
+                    />
+                  )}
                   {errors.location && <p className="font-poppins text-red-500 text-xs mt-1">{errors.location}</p>}
                 </div>
                 <button type="submit" disabled={submitting} className="w-full h-[60px] rounded-lg text-white font-poppins font-semibold text-lg transition-all hover:opacity-90 hover:scale-[1.01] mt-2 disabled:opacity-60 disabled:cursor-not-allowed" style={{ background: '#73B130' }}>

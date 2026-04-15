@@ -15,9 +15,9 @@ export default function Services() {
   const { headingRef, descRef, setCardRef } = useSectionAnimation<HTMLHeadingElement, HTMLParagraphElement, HTMLDivElement>()
 
   return (
-    <section id="services" className="py-24 px-5 md:px-20">
-      <div className="max-w-[1280px] mx-auto rounded-2xl p-10 md:p-20" style={{ background: '#F9F9F9' }}>
-        <div className="text-center mb-16">
+    <section id="services" className="py-[60px] md:py-[100px] px-4 md:px-20">
+      <div className="max-w-[1280px] mx-auto rounded-2xl px-4 py-8 md:p-20" style={{ background: '#F9F9F9' }}>
+        <div className="text-center mb-10 md:mb-16">
           <h2 ref={headingRef} className="font-quicksand text-black mb-4" style={{ fontWeight: 600, fontSize: 'clamp(1.75rem, 4vw, 3.25rem)', lineHeight: '1.27' }}>
             All-in-one package for your property needs. Fully managed.
           </h2>
@@ -26,12 +26,12 @@ export default function Services() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           {services.map((service, i) => (
             <div
               key={i}
               ref={el => setCardRef(el, i)}
-              className="bg-white rounded-2xl p-6 flex flex-col hover:shadow-md transition-shadow"
+              className="bg-white rounded-2xl p-6 md:p-10 flex flex-col hover:shadow-md transition-shadow w-full"
               style={{ border: '1px solid rgba(0,0,0,0.06)', gap: '0.375rem' }}
             >
               <Image src={service.icon} alt={service.title} width={56} height={56} className="mb-3" />
