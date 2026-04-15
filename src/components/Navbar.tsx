@@ -57,7 +57,7 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Desktop CTA */}
+        {/* Desktop CTA — unchanged */}
         <a
           href="#consultation-form"
           className="hidden md:flex items-center justify-center px-6 py-2.5 rounded-lg text-white font-inter font-bold text-base transition-all hover:opacity-90"
@@ -66,11 +66,17 @@ export default function Navbar() {
           Get Free Consultation
         </a>
 
-        {/* Mobile CTA — replaces hamburger */}
+        {/* Mobile CTA — 8px vertical, 22px horizontal */}
         <a
           href="#consultation-form"
-          className="flex md:hidden items-center justify-center px-4 py-2 rounded-lg text-white font-poppins font-semibold text-sm transition-all hover:opacity-90"
-          style={{ background: 'linear-gradient(103.43deg, #0D631B 0%, #2E7D32 100%)' }}
+          className="flex md:hidden items-center justify-center rounded-lg text-white font-poppins font-semibold text-sm transition-all hover:opacity-90"
+          style={{
+            background: 'linear-gradient(103.43deg, #0D631B 0%, #2E7D32 100%)',
+            paddingTop: '8px',
+            paddingBottom: '8px',
+            paddingLeft: '22px',
+            paddingRight: '22px',
+          }}
         >
           Book Free Callback
         </a>
