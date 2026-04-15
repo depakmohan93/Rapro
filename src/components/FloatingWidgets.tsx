@@ -7,7 +7,7 @@ const WHATSAPP_MESSAGE = encodeURIComponent(
 
 export default function FloatingWidgets() {
   return (
-    <div className="fixed bottom-6 right-5 z-50 flex flex-col gap-3">
+    <div className="fixed right-5 z-50 flex flex-col gap-3 bottom-[88px] md:bottom-6">
       {/* Phone Call */}
       <a
         href={`tel:${PHONE}`}

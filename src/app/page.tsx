@@ -12,6 +12,7 @@ import CTA3 from '@/components/CTA3'
 import FAQ from '@/components/FAQ'
 import Footer from '@/components/Footer'
 import FloatingWidgets from '@/components/FloatingWidgets'
+import FloatingCTA from '@/components/FloatingCTA'
 
 export default function Home() {
   return (
@@ -30,6 +31,7 @@ export default function Home() {
       <FAQ />
       <Footer />
       <FloatingWidgets />
+      <FloatingCTA />
     </main>
   )
 }

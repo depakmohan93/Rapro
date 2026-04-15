@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" data-spacing="balanced" suppressHydrationWarning>
       <head>
         {/* Google Tag Manager */}
         <Script id="gtm-head" strategy="beforeInteractive">

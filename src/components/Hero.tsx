@@ -3,21 +3,10 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
 
 // Google Apps Script Web App URL — replace this after deploying your script
 const APPS_SCRIPT_URL = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL || ''
 
-const stats = [
-  { value: 500, suffix: '+', label: 'TRUSTED CUSTOMERS', decimal: false },
-  { value: 4.8, suffix: '/5', label: 'GOOGLE RATING', decimal: true },
-  { value: 300, suffix: '+', label: "HAPPY NRI'S", decimal: false },
-  { value: 30, suffix: '+', label: 'YEARS OF SERVICE', decimal: false },
-]
 
 function validateIndianPhone(phone: string): string | null {
   const cleaned = phone.replace(/\s+/g, '').replace(/-/g, '')
@@ -76,7 +65,6 @@ export default function Hero() {
   const pillsRef = useRef<HTMLDivElement>(null)
   const formWrapRef = useRef<HTMLDivElement>(null)
   const statsRef = useRef<HTMLDivElement>(null)
-  const counterRefs = useRef<(HTMLSpanElement | null)[]>([])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -87,22 +75,6 @@ export default function Hero() {
       gsap.to(leftEls, { y: 0, opacity: 1, duration: 1.1, stagger: { each: 0.1, ease: 'power2.inOut' }, ease: 'power4.out', delay: 0.2 })
       gsap.to(formWrapRef.current, { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', delay: 0.5 })
       gsap.to(statsRef.current, { y: 0, opacity: 1, duration: 1.0, ease: 'power3.out', delay: 0.9 })
-      ScrollTrigger.create({
-        trigger: statsRef.current,
-        start: 'top 85%',
-        once: true,
-        onEnter: () => {
-          stats.forEach((stat, i) => {
-            const el = counterRefs.current[i]
-            if (!el) return
-            const obj = { val: 0 }
-            gsap.to(obj, {
-              val: stat.value, duration: 2.2, ease: 'power2.out',
-              onUpdate: () => { el.textContent = stat.decimal ? obj.val.toFixed(1) + stat.suffix : Math.round(obj.val) + stat.suffix },
-            })
-          })
-        },
-      })
     })
     return () => ctx.revert()
   }, [])
@@ -184,10 +156,10 @@ export default function Hero() {
             <div ref={reviewRef} className="flex items-center gap-3 mb-8">
               <Image src="/review_cluster.png" alt="Customer reviews" width={138} height={38} className="object-contain flex-shrink-0" />
               <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
+                <a href="#testimonials" className="flex items-center gap-2 cursor-pointer">
                   <span className="font-mulish font-semibold text-white text-sm">Read reviews</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                </div>
+                </a>
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#FFEC3E"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" /></svg>)}
                   <span className="font-mulish text-white text-sm font-medium ml-1">5.0</span>
@@ -269,14 +241,35 @@ export default function Hero() {
         </div>
       </div>
 
-      <div ref={statsRef} className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-20 pb-16">
-        <div className="rounded-3xl px-10 py-12 grid grid-cols-2 md:grid-cols-4 gap-8" style={{ background: 'rgba(255,255,255,0.1)', border: '2px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(3.35px)' }}>
-          {stats.map((stat, i) => (
-            <div key={stat.label} className="flex flex-col gap-4">
-              <span ref={el => { counterRefs.current[i] = el }} className="font-quicksand font-bold text-white" style={{ fontSize: '52px', lineHeight: '1' }}>0{stat.suffix}</span>
-              <span className="font-poppins font-semibold text-white uppercase tracking-[0.7px]" style={{ fontSize: '14px' }}>{stat.label}</span>
-            </div>
-          ))}
+      {/* ── Stat Card — Figma mobile spec ────────────────────────── */}
+      <div ref={statsRef} className="relative z-10 w-full px-5 md:px-20 lg:px-20 pb-16">
+        <div className="stat-card">
+          {/* Stat 1 — Trusted Customers */}
+          <div className="stat-card__item">
+            <span className="stat-card__value">500+</span>
+            <span className="stat-card__label">Trusted Customers</span>
+          </div>
+
+          {/* Stat 2 — Google Rating */}
+          <div className="stat-card__item">
+            <span className="stat-card__value">4.8/5</span>
+            <span className="stat-card__label">Google Rating</span>
+          </div>
+
+          {/* Stat 3 — Happy NRIs */}
+          <div className="stat-card__item">
+            <span className="stat-card__value">300+</span>
+            <span className="stat-card__label">Happy NRI&apos;s</span>
+          </div>
+
+          {/* Stat 4 — Years of Service */}
+          <div className="stat-card__item">
+            <span className="stat-card__value">30+</span>
+            <span className="stat-card__label">Years of Service</span>
+          </div>
+
+          {/* Vertical centre divider */}
+          <div className="stat-card__divider" aria-hidden="true" />
         </div>
       </div>
     </section>
