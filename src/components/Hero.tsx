@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -66,6 +67,7 @@ export default function Hero() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const router = useRouter()
 
   const badgeRef = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -141,11 +143,8 @@ export default function Hero() {
         method: 'GET',
         mode: 'no-cors',
       })
-      // no-cors means we can't read response, assume success
-      setSubmitStatus('success')
-      setFormData({ name: '', phone: '', email: '', propertyType: 'Apartment', location: '' })
-      setOtherLocation('')
-      setErrors({})
+      // Redirect to thank you page on success
+      router.push('/thank-you')
     } catch {
       setSubmitStatus('error')
     } finally {
@@ -257,12 +256,7 @@ export default function Hero() {
                 <button type="submit" disabled={submitting} className="w-full h-[60px] rounded-lg text-white font-poppins font-semibold text-lg transition-all hover:opacity-90 hover:scale-[1.01] mt-2 disabled:opacity-60 disabled:cursor-not-allowed" style={{ background: '#73B130' }}>
                   {submitting ? 'Submitting...' : 'Book Free Callback'}
                 </button>
-                {submitStatus === 'success' && (
-                  <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 border border-green-200">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#73B130" strokeWidth="1.5"/><path d="M7 12.5l3.5 3.5 6-7" stroke="#73B130" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    <p className="font-poppins text-green-700 text-sm">Thank you! Our experts will call you back within 24 hours.</p>
-                  </div>
-                )}
+
                 {submitStatus === 'error' && (
                   <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 border border-red-200">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#DF6C6C" strokeWidth="1.5"/><path d="M8 8l8 8M16 8l-8 8" stroke="#DF6C6C" strokeWidth="1.8" strokeLinecap="round"/></svg>
