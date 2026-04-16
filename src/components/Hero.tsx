@@ -55,7 +55,6 @@ export default function Hero() {
   const [otherLocation, setOtherLocation] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const router = useRouter()
 
   const badgeRef = useRef<HTMLDivElement>(null)
@@ -97,7 +96,6 @@ export default function Hero() {
     e.preventDefault()
     if (!validate()) return
     setSubmitting(true)
-    setSubmitStatus('idle')
     try {
       const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
       const finalLocation = formData.location === 'Other' ? otherLocation : formData.location
@@ -109,18 +107,17 @@ export default function Hero() {
         propertyType: formData.propertyType,
         location: finalLocation,
       }
-      // Send as URL params to Apps Script (no-cors compatible)
-      const params = new URLSearchParams(payload)
-      await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, {
-        method: 'GET',
-        mode: 'no-cors',
-      })
-      // Redirect to thank you page on success
-      router.push('/thank-you')
-    } catch {
-      setSubmitStatus('error')
+      // Fire-and-forget — don't await, never block the redirect
+      if (APPS_SCRIPT_URL) {
+        const params = new URLSearchParams(payload)
+        fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, {
+          method: 'GET',
+          mode: 'no-cors',
+        }).catch(() => {}) // silently ignore sheet errors
+      }
     } finally {
-      setSubmitting(false)
+      // Always redirect — sheet write must never block the user
+      router.push('/thank-you')
     }
   }
 
@@ -229,12 +226,7 @@ export default function Hero() {
                   {submitting ? 'Submitting...' : 'Book Free Callback'}
                 </button>
 
-                {submitStatus === 'error' && (
-                  <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 border border-red-200">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#DF6C6C" strokeWidth="1.5"/><path d="M8 8l8 8M16 8l-8 8" stroke="#DF6C6C" strokeWidth="1.8" strokeLinecap="round"/></svg>
-                    <p className="font-poppins text-red-600 text-sm">Something went wrong. Please try again or call us directly.</p>
-                  </div>
-                )}
+
               </div>
             </form>
           </div>
