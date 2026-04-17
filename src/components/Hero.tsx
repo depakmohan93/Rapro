@@ -238,7 +238,7 @@ export default function Hero() {
         <div className="stat-card">
           {/* Stat 1 — Trusted Customers */}
           <div className="stat-card__item">
-            <span className="stat-card__value">500+</span>
+            <span className="stat-card__value">3000+</span>
             <span className="stat-card__label">Trusted Customers</span>
           </div>
 
@@ -250,7 +250,7 @@ export default function Hero() {
 
           {/* Stat 3 — Happy NRIs */}
           <div className="stat-card__item">
-            <span className="stat-card__value">300+</span>
+            <span className="stat-card__value">1000+</span>
             <span className="stat-card__label">Happy NRI&apos;s</span>
           </div>
 
