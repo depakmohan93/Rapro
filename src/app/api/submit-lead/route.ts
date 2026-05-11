@@ -14,6 +14,8 @@ export async function POST(request: Request) {
       timestamp = '',
     } = body
 
+    // ── Bigin ────────────────────────────────────────────────────────────────
+
     // Step 1: Exchange refresh token for a fresh Zoho access token
     const tokenRes = await fetch('https://accounts.zoho.in/oauth/v2/token', {
       method: 'POST',
@@ -28,20 +30,13 @@ export async function POST(request: Request) {
 
     const tokenData = await tokenRes.json()
 
-    if (!tokenData.access_token) {
-      console.error('Zoho token error:', JSON.stringify(tokenData))
-      // Return success so the user is never blocked by a token failure
-      return NextResponse.json({ success: true })
-    }
-
-    // Step 2: Build the Zoho Bigin contact record
     const metaParts = [
       timestamp && `Submitted: ${timestamp}`,
       propertyType && `Property Type: ${propertyType}`,
       location && `Location: ${location}`,
     ].filter(Boolean)
 
-    const contactPayload = {
+    const biginPayload = {
       data: [
         {
           Last_Name: (name as string).trim() || 'Unknown',
@@ -56,29 +51,76 @@ export async function POST(request: Request) {
       ],
     }
 
-    // Step 3: POST the new contact to Zoho Bigin
-    const biginRes = await fetch('https://www.zohoapis.in/bigin/v2/Contacts', {
-      method: 'POST',
-      headers: {
-        Authorization: `Zoho-oauthtoken ${tokenData.access_token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(contactPayload),
-    })
+    // ── HubSpot ──────────────────────────────────────────────────────────────
 
-    const biginData = await biginRes.json()
+    const nameParts = (name as string).trim().split(' ')
+    const firstName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : ''
+    const lastName = nameParts[nameParts.length - 1] || 'Unknown'
 
-    if (biginData.data?.[0]?.status === 'success') {
-      return NextResponse.json({ success: true })
+    const hubspotProperties: Record<string, string> = {
+      email,
+      firstname: firstName,
+      lastname: lastName,
+      phone,
+      hs_lead_status: 'NEW',
+    }
+    if (location) hubspotProperties.city = location
+    if (service) hubspotProperties.services_you_are_looking_for = service
+    if (message) hubspotProperties.message = message
+    if (propertyType) hubspotProperties.property_type = propertyType
+
+    // ── Fire both in parallel ─────────────────────────────────────────────────
+
+    const [biginResult, hubspotResult] = await Promise.allSettled([
+      // Bigin
+      (async () => {
+        if (!tokenData.access_token) {
+          console.error('Zoho token error:', JSON.stringify(tokenData))
+          return
+        }
+        const res = await fetch('https://www.zohoapis.in/bigin/v2/Contacts', {
+          method: 'POST',
+          headers: {
+            Authorization: `Zoho-oauthtoken ${tokenData.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(biginPayload),
+        })
+        const data = await res.json()
+        if (data.data?.[0]?.status !== 'success') {
+          console.error('Zoho Bigin error:', JSON.stringify(data))
+        }
+      })(),
+
+      // HubSpot
+      (async () => {
+        const res = await fetch('https://api.hubapi.com/crm/v3/objects/contacts', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${process.env.HUBSPOT_ACCESS_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ properties: hubspotProperties }),
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          console.error('HubSpot error:', JSON.stringify(data))
+        }
+      })(),
+    ])
+
+    if (biginResult.status === 'rejected') {
+      console.error('Bigin call failed:', biginResult.reason)
+    }
+    if (hubspotResult.status === 'rejected') {
+      console.error('HubSpot call failed:', hubspotResult.reason)
     }
 
-    // Log the Bigin error but still return success — never block the user
-    console.error('Zoho Bigin error:', JSON.stringify(biginData))
+    // Always return success — a CRM failure must never block the user
     return NextResponse.json({ success: true })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('submit-lead error:', message)
-    // Always return success — a CRM failure must never break the user flow
     return NextResponse.json({ success: true })
   }
 }
