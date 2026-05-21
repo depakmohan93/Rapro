@@ -168,7 +168,7 @@ export default function Hero() {
           {/* ── Right column — Form ──────────────────────────────────── */}
           <div ref={formWrapRef} className="relative w-full lg:w-[480px] flex-shrink-0 mt-20 lg:mt-0">
             <div className="absolute -top-20 -left-4 lg:-left-20 z-20 pointer-events-none"><FloatingBadge /></div>
-            <div id="consultation-form" style={{ width: '100%', height: '660px', overflow: 'hidden', background: 'transparent' }}>
+            <div id="consultation-form" style={{ width: '100%', height: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '0.75rem' }}>
               <iframe
                 src="https://mathiverse.gridapps.in/f/68ea0d1e-9210-4036-81c1-a2ff3d713767?embed=1&utm_source=mathiverse&utm_medium=form&utm_campaign=lead-form-chennai&utm_content=rajam-property"
                 width="100%"
