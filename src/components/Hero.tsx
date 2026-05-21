@@ -1,26 +1,6 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
-
-function validateIndianPhone(phone: string): string | null {
-  const cleaned = phone.replace(/\s+/g, '').replace(/-/g, '')
-  const regex = /^(\+91|91|0)?[6-9]\d{9}$/
-  if (!cleaned) return 'Phone number is required'
-  if (!regex.test(cleaned)) return 'Enter a valid Indian mobile number (10 digits starting with 6-9)'
-  return null
-}
-function validateEmail(email: string): string | null {
-  if (!email) return 'Email is required'
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Enter a valid email address'
-  return null
-}
-function validateName(name: string): string | null {
-  if (!name.trim()) return 'Full name is required'
-  if (name.trim().length < 2) return 'Name must be at least 2 characters'
-  return null
-}
 
 function FloatingBadge() {
   const circularText = 'YEARS OF EXPERTISE • 30+ YEARS OF EXPERTISE • 30+ '
@@ -128,11 +108,6 @@ function StatStrip({ city }: { city: 'Chennai' | 'Bangalore' }) {
 }
 
 export default function Hero() {
-  const [formData, setFormData] = useState({ name: '', phone: '', email: '', propertyType: '', propertyLocation: '', propertyLocationOther: '' })
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [submitting, setSubmitting] = useState(false)
-  const router = useRouter()
-
   const badgeRef = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const subRef = useRef<HTMLParagraphElement>(null)
@@ -149,49 +124,6 @@ export default function Hero() {
     })
     return () => ctx.revert()
   }, [])
-
-  const validate = () => {
-    const newErrors: Record<string, string> = {}
-    const nameErr = validateName(formData.name)
-    const phoneErr = validateIndianPhone(formData.phone)
-    const emailErr = validateEmail(formData.email)
-    if (nameErr) newErrors.name = nameErr
-    if (phoneErr) newErrors.phone = phoneErr
-    if (emailErr) newErrors.email = emailErr
-    if (!formData.propertyType) newErrors.propertyType = 'Please select a property type'
-    if (!formData.propertyLocation) newErrors.propertyLocation = 'Please select a location'
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!validate()) return
-    setSubmitting(true)
-    try {
-      const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
-      const payload = {
-        timestamp,
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        propertyType: formData.propertyType,
-        propertyLocation: formData.propertyLocation === 'Other' ? formData.propertyLocationOther : formData.propertyLocation,
-      }
-      // Fire-and-forget — don't await, never block the redirect
-      fetch('/api/submit-lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      }).catch(() => {}) // silently ignore errors
-    } finally {
-      // Always redirect — API call must never block the user
-      router.push('/thank-you')
-    }
-  }
-
-  const inputClass = (field: string) =>
-    `w-full h-[47px] bg-[#F3F3F6] rounded-lg px-4 font-poppins text-base text-[#1A1C1E] placeholder-[#6B7280] border-0 outline-none transition-all ${errors[field] ? 'ring-2 ring-red-400' : 'focus:ring-2 focus:ring-[#73B130]/30'}`
 
   return (
     <section id="consultation" className="relative min-h-screen pt-[76px] overflow-hidden">
