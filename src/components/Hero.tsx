@@ -193,12 +193,12 @@ export default function Hero() {
 
           {/* ── Right column — Form ──────────────────────────────────── */}
           <div ref={formWrapRef} className="relative w-full lg:w-[480px] flex-shrink-0 mt-20 lg:mt-0">
-            <div className="absolute -top-20 -left-4 lg:-left-20 z-20 pointer-events-none"><FloatingBadge /></div>
-            <div id="consultation-form" style={{ width: '100%', height: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '0.75rem' }}>
+            <div className="absolute -top-14 -left-14 z-20 pointer-events-none"><FloatingBadge /></div>
+            <div id="consultation-form" style={{ width: '100%', height: '700px', overflow: 'hidden', background: 'transparent', borderRadius: '0.75rem' }}>
               <iframe
                 src="https://events.pana.space/f/44e62d2b-7d25-4b31-a221-b6e420712c99?embed=1&utm_source=mathiverse&utm_medium=form&utm_campaign=website-chennai&utm_content=rajam-property"
                 width="100%"
-                height="700"
+                height="750"
                 frameBorder="0"
                 title="Registration form"
                 style={{ display: 'block', border: 'none' }}
