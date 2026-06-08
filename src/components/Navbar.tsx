@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { useModal } from '@/lib/modalContext'
 
 const navLinks = [
   { label: 'Services', href: '#services', id: 'services' },
@@ -11,6 +12,7 @@ const navLinks = [
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
+  const { openModal } = useModal()
 
   useEffect(() => {
     const observers: IntersectionObserver[] = []
@@ -67,13 +69,13 @@ export default function Navbar() {
           </div>
 
           {/* Desktop CTA */}
-          <a
-            href="#consultation-form"
+          <button
+            onClick={openModal}
             className="hidden md:flex items-center justify-center px-6 py-2.5 rounded-lg text-white font-inter font-bold text-base transition-all hover:opacity-90"
-            style={{ background: 'linear-gradient(103.43deg, #0D631B 0%, #2E7D32 100%)', boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1)' }}
+            style={{ background: '#73B130', boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1)' }}
           >
             Get Free Consultation
-          </a>
+          </button>
 
           {/* Mobile — mail icon + hamburger */}
           <div className="flex md:hidden items-center gap-4">
@@ -151,14 +153,13 @@ export default function Navbar() {
               </a>
             )
           })}
-          <a
-            href="#consultation-form"
-            onClick={() => setMenuOpen(false)}
-            className="mt-3 flex items-center justify-center py-3 rounded-lg text-white font-inter font-bold text-base"
-            style={{ background: 'linear-gradient(103.43deg, #0D631B 0%, #2E7D32 100%)' }}
+          <button
+            onClick={() => { setMenuOpen(false); openModal() }}
+            className="mt-3 flex items-center justify-center py-3 rounded-lg text-white font-inter font-bold text-base w-full"
+            style={{ background: '#73B130' }}
           >
             Get Free Consultation
-          </a>
+          </button>
         </div>
       </div>
 
