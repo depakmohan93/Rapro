@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import Script from 'next/script'
 import { useModal } from '@/lib/modalContext'
 
 function validateIndianPhone(phone: string): string | null {
@@ -24,6 +25,8 @@ function validateName(name: string): string | null {
 export default function ConsultationModal() {
   const { isOpen, closeModal } = useModal()
   const router = useRouter()
+  const pathname = usePathname()
+  const isPropertyManagement = pathname === '/property-management'
   const overlayRef = useRef<HTMLDivElement>(null)
   const firstInputRef = useRef<HTMLInputElement>(null)
 
@@ -106,6 +109,66 @@ export default function ConsultationModal() {
 
   if (!isOpen) return null
 
+  // ── Property-management page: iframe embed form ──────────────────────────────
+  if (isPropertyManagement) {
+    return (
+      <>
+        <Script src="https://eventshare.pana.space/embed.js" strategy="lazyOnload" />
+        <div
+          ref={overlayRef}
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
+          onClick={(e) => { if (e.target === overlayRef.current) closeModal() }}
+          aria-modal="true"
+          role="dialog"
+          aria-label="Free Consultation Form"
+        >
+          <div
+            className="relative w-full bg-white rounded-2xl overflow-hidden"
+            style={{
+              maxWidth: '560px',
+              maxHeight: '90vh',
+              boxShadow: '0px 25px 60px -12px rgba(0,0,0,0.4)',
+              animation: 'modal-in 0.25s cubic-bezier(0.34,1.56,0.64,1) both',
+            }}
+          >
+            {/* Close button */}
+            <button
+              onClick={closeModal}
+              aria-label="Close modal"
+              className="absolute top-3 right-3 z-10 flex items-center justify-center w-8 h-8 rounded-full transition-colors hover:bg-gray-100"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Iframe embed */}
+            <div className="overflow-y-auto" style={{ maxHeight: '90vh' }}>
+              <iframe
+                src="https://eventshare.pana.space/f/78b59231-2845-44b6-9887-938141e57684?embed=1"
+                width="100%"
+                height="600"
+                frameBorder={0}
+                title="Registration form"
+                data-mathiverse-form="embed"
+                style={{ display: 'block' }}
+              />
+            </div>
+          </div>
+        </div>
+        <style>{`
+          @keyframes modal-in {
+            from { opacity: 0; transform: scale(0.92) translateY(16px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+          }
+        `}</style>
+      </>
+    )
+  }
+
+  // ── Default: standard consultation form ──────────────────────────────────────
   return (
     <div
       ref={overlayRef}
