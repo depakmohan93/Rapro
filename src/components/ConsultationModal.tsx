@@ -116,46 +116,45 @@ export default function ConsultationModal() {
         <Script src="https://eventshare.pana.space/embed.js" strategy="lazyOnload" />
         <div
           ref={overlayRef}
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          className="fixed inset-0 z-[200] flex items-center justify-center"
           style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
           onClick={(e) => { if (e.target === overlayRef.current) closeModal() }}
           aria-modal="true"
           role="dialog"
           aria-label="Free Consultation Form"
         >
+          {/* Close button — floats over the iframe top-right */}
+          <button
+            onClick={closeModal}
+            aria-label="Close modal"
+            className="absolute top-4 right-4 z-10 flex items-center justify-center w-8 h-8 rounded-full transition-colors"
+            style={{ background: 'rgba(0,0,0,0.45)' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+
+          {/* Iframe — no wrapper, no padding, transparent */}
           <div
-            className="relative w-full bg-white rounded-2xl overflow-hidden"
+            className="overflow-y-auto"
             style={{
+              width: '100%',
               maxWidth: '560px',
-              maxHeight: '90vh',
-              boxShadow: '0px 25px 60px -12px rgba(0,0,0,0.4)',
+              maxHeight: '100vh',
               animation: 'modal-in 0.25s cubic-bezier(0.34,1.56,0.64,1) both',
             }}
           >
-            {/* Close button */}
-            <button
-              onClick={closeModal}
-              aria-label="Close modal"
-              className="absolute top-3 right-3 z-10 flex items-center justify-center w-8 h-8 rounded-full transition-colors hover:bg-gray-100"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-
-            {/* Iframe embed */}
-            <div className="overflow-y-auto" style={{ maxHeight: '90vh' }}>
-              <iframe
-                src="https://eventshare.pana.space/f/78b59231-2845-44b6-9887-938141e57684?embed=1"
-                width="100%"
-                height="600"
-                frameBorder={0}
-                title="Registration form"
-                data-mathiverse-form="embed"
-                style={{ display: 'block' }}
-              />
-            </div>
+            <iframe
+              src="https://eventshare.pana.space/f/78b59231-2845-44b6-9887-938141e57684?embed=1"
+              width="100%"
+              height="700"
+              frameBorder={0}
+              title="Registration form"
+              data-mathiverse-form="embed"
+              style={{ display: 'block' }}
+            />
           </div>
         </div>
         <style>{`
