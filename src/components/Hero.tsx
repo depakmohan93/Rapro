@@ -229,7 +229,7 @@ function ReviewCard({ review }: { review: typeof reviews[0] }) {
 function ReviewSlider() {
   const doubled = [...reviews, ...reviews]
   return (
-    <div className="w-full mt-12 md:mt-16">
+    <div id="testimonials" className="w-full mt-12 md:mt-16 scroll-mt-[100px]">
       {/* Heading */}
       <p
         className="text-center mb-7 font-quicksand"
