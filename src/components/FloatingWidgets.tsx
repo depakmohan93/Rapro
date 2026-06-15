@@ -5,18 +5,6 @@ const WHATSAPP_MESSAGE = encodeURIComponent(
   "Hi! I'm interested in Rajam Property's management services for my property in Chennai. Could you please share more details and help me get started?"
 )
 
-declare global {
-  interface Window {
-    dataLayer: Record<string, unknown>[]
-  }
-}
-
-function pushGTMEvent(eventName: string, extra?: Record<string, unknown>) {
-  if (typeof window === 'undefined') return
-  window.dataLayer = window.dataLayer || []
-  window.dataLayer.push({ event: eventName, ...extra })
-}
-
 export default function FloatingWidgets() {
   return (
     <div className="fixed right-5 z-50 flex flex-col gap-3 bottom-[88px] md:bottom-6">
@@ -25,7 +13,6 @@ export default function FloatingWidgets() {
         id="floating-call-btn"
         href={`tel:${PHONE}`}
         aria-label="Call us"
-        onClick={() => pushGTMEvent('floating_call_click', { link_url: `tel:${PHONE}` })}
         className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
         style={{ background: '#0D631B' }}
       >
@@ -44,7 +31,6 @@ export default function FloatingWidgets() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        onClick={() => pushGTMEvent('floating_whatsapp_click', { link_url: `https://wa.me/${PHONE}` })}
         className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
         style={{ background: '#25D366' }}
       >
