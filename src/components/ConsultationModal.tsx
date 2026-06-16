@@ -98,7 +98,9 @@ export default function ConsultationModal() {
             maxWidth: '560px',
             maxHeight: '100vh',
             animation: 'modal-in 0.25s cubic-bezier(0.34,1.56,0.64,1) both',
-          }}
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          } as React.CSSProperties}
         >
           <iframe
             src={iframeSrc}
@@ -116,6 +118,9 @@ export default function ConsultationModal() {
         @keyframes modal-in {
           from { opacity: 0; transform: scale(0.92) translateY(16px); }
           to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .overflow-y-auto::-webkit-scrollbar {
+          display: none;
         }
       `}</style>
     </>
